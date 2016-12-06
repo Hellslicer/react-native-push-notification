@@ -283,6 +283,10 @@ public class RNPushNotificationHelper {
             }
             notification.setVibrate(vibration);
 
+            if (bundle.containsKey("lights")) {
+                notification.setLights(bundle.getInt("lights"), 1, 0);
+            }
+
             JSONArray actionsArray = null;
             try {
                 actionsArray = bundle.getString("actions") != null ? new JSONArray(bundle.getString("actions")) : null;
@@ -330,7 +334,9 @@ public class RNPushNotificationHelper {
             }
 
             Notification info = notification.build();
-            info.defaults |= Notification.DEFAULT_LIGHTS;
+            if (!bundle.containsKey("lights")) {
+                info.defaults |= Notification.DEFAULT_LIGHTS;
+            }
 
             if (bundle.containsKey("tag")) {
                 String tag = bundle.getString("tag");

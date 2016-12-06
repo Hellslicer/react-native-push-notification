@@ -3,6 +3,7 @@ package com.dieam.reactnativepushnotification.modules;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -41,6 +42,13 @@ public class RNPushNotificationListenerService extends GcmListenerService {
             }
             if (!bundle.containsKey("color")) {
                 bundle.putString("color", data.optString("color", null));
+            }
+            if (!bundle.containsKey("lights")) {
+                try {
+                    bundle.putInt("lights", Color.parseColor(data.optString("lights", "blue")));
+                } catch (IllegalArgumentException e) {
+                    Log.v(LOG_TAG, "Error on color light parsing: " + e.getMessage());
+                }
             }
             if (data.has("vibrate")) {
                 JSONArray vibrate = data.optJSONArray("vibrate");
