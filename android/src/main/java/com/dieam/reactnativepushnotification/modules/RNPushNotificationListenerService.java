@@ -15,7 +15,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.google.android.gms.gcm.GcmListenerService;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.util.List;
 import java.util.Random;
@@ -39,6 +41,20 @@ public class RNPushNotificationListenerService extends GcmListenerService {
             }
             if (!bundle.containsKey("color")) {
                 bundle.putString("color", data.optString("color", null));
+            }
+            if (data.has("vibrate")) {
+                JSONArray vibrate = data.optJSONArray("vibrate");
+                long[] vibration = new long[vibrate.length()];
+
+                try {
+                    for (int i = 0; i < vibrate.length(); i++) {
+                        vibration[i] = vibrate.getLong(i);
+                    }
+                } catch (JSONException e) {
+                    Log.v(LOG_TAG, "Error on vibration parsing: " + e.getMessage());
+                }
+
+                bundle.putLongArray("vibrate", vibration);
             }
 
             final int badge = data.optInt("badge", -1);
